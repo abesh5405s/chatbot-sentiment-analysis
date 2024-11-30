@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h1, h2 {
+            color: #444;
+            text-align: center;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .form-section, .info-section {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #ff4d4d;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-left: 4px solid #ff6b6b;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result p {
+            margin: 5px 0;
+        }
+
+        .info-section {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentiment Analysis Tool</h1>
+        <p>Welcome to the Sentiment Analysis tool! Enter text below to analyze its sentiment and understand its polarity and subjectivity.</p>
+
+        <div class="form-section">
+            <h2>Analyze Text</h2>
+            <textarea id="user-input" placeholder="Enter your text here..."></textarea>
+            <button onclick="analyzeSentiment()">Analyze</button>
+            <div class="result" id="result">
+                <p><strong>Sentiment:</strong> <span id="sentiment"></span></p>
+                <p><strong>Polarity:</strong> <span id="polarity"></span></p>
+                <p><strong>Subjectivity:</strong> <span id="subjectivity"></span></p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>What is Sentiment Analysis?</h2>
+            <p>Sentiment Analysis, also known as opinion mining, is the process of determining the emotional tone behind a series of words. It is widely used to analyze customer feedback, social media, and other forms of textual data.</p>
+            
+            <h3>Understanding Polarity and Subjectivity</h3>
+            <ul>
+                <li><strong>Polarity:</strong> Refers to the tone of the text. It ranges from -1 (very negative) to +1 (very positive). A polarity of 0 indicates a neutral sentiment.</li>
+                <li><strong>Subjectivity:</strong> Indicates how subjective or opinion-based the text is. It ranges from 0 (completely objective) to 1 (completely subjective).</li>
+            </ul>
+
+            <h3>Uses and Impact</h3>
+            <ul>
+                <li><strong>Business Insights:</strong> Understand customer opinions to improve products and services.</li>
+                <li><strong>Social Media Monitoring:</strong> Analyze trends and public sentiment in real-time.</li>
+                <li><strong>Customer Support:</strong> Identify and respond to negative feedback quickly.</li>
+                <li><strong>Market Research:</strong> Gauge audience response to campaigns or brands.</li>
+            </ul>
+            
+            <p>This tool uses <strong>TextBlob</strong>, a Python library, to perform sentiment analysis by evaluating polarity (positive, negative, or neutral) and subjectivity (fact-based or opinion-based).</p>
+        </div>
+    </div>
+
+    <footer>
+        Created with ❤️ by Abesh | <a href="#">Learn more</a>
+    </footer>
+
+    <script>
+        async function analyzeSentiment() {
+            const input = document.getElementById("user-input").value;
+            if (!input.trim()) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            const response = await fetch("http://127.0.0.1:5000/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: input })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("sentiment").textContent = data.sentiment;
+                document.getElementById("polarity").textContent = data.polarity;
+                document.getElementById("subjectivity").textContent = data.subjectivity;
+                document.getElementById("result").style.display = "block";
+            } else {
+                alert("An error occurred. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
